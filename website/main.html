@@ -3,16 +3,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shirtify</title>
-    <link href="styles/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="styles/baseStyle.css" rel="stylesheet" type="text/css">
+    <link href="styles/shoppingStyle.css" rel="stylesheet" type="text/css">
+
+    <script src="javascript/login.js"></script>
 </head>
 <body>
-    <header></header>
-            <nav>
-                <ul>
-                    <li> <a href="https://google.com" >Login</a></li>
-                    <li> <a href="https://google.com">Checkout</a></li>
-                </ul>
-            </nav>
+    <header>
+        <button type="button" id="login" onclick="manageAccount()">
+            <img class="icon" src="img/account.png" alt="account">
+        </button>
+
+        <button type="button">
+                <img class="icon" src="img/cart.png" alt="cart">
+        </button>
+    </header>
+    
+    <nav></nav>
+    
     <div id="wrapper">
         <div class="item">
             <img class="productImg" src="img/t-shirt.png" alt="T-Shirt">
