@@ -1,0 +1,66 @@
+header {
+    height: 220px;
+    width: 100%;
+    background-image: url("/images/b.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+}
+
+body {
+    background-image: url("/images/background.png");
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+nav {
+	background-color: rgb(147, 201, 201);
+	height: 22px;
+}
+
+nav ul {
+    display:flex;
+    justify-content: space-evenly;
+}
+
+nav ul li {
+    list-style: none;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color:blue;
+}
+
+nav li a:hover, nav li a.current {
+	color: #000000;
+}
+
+header button {
+    border: none;
+    cursor: pointer;
+    appearance: none;
+    background-color: inherit;
+
+    transition: transform .7s ease-in-out;
+
+    display:flex;
+    padding: 20px;
+    margin:40px; 
+}
+
+button:hover {
+    transform: rotate(360deg);
+}
+
+.icon {
+    width: 70px;
+    height: 70px;
+}
