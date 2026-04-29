@@ -1,3 +1,8 @@
+.cart-container {
+    place-items: center;
+    display: block;
+}
+
 .cart-header {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
@@ -28,7 +33,6 @@
 .quantity {
     display: flex;
     gap: 10px;
-    margin-right: 50px;
 }
 
 .quantity input {
@@ -46,22 +50,13 @@
 }
 
 .purchase {
-    margin-top: 20px;
+    text-align: center;
     background-color: #5bc0de;
     border: none;
     padding: 10px 20px;
     color: white;
     font-size: 16px;
     cursor: pointer;
-}
-
-.cart-header h4:nth-child(2),
-.cart-header h4:nth-child(3) {
-    text-align: center;
-}
-
-.cart-item > h4 {
-    text-align: center;
 }
 
 h1 {
