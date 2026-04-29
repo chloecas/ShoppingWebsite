@@ -4,9 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shirtify Checkout</title>
+    <link href="styles/baseStyle.css" rel="stylesheet" type="text/css">
     <link href="styles/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="styles/checkoutStyle.css" rel="stylesheet" type="text/css">
+    <script src="javascript/checkout.js"></script>
 </head>
 <body>
-    <h1>Shirtify Checkout Page</h1>
+    <header>
+        <button type="button" id="goCheckout" onclick="goCheckout()">
+            <img class="icon" src="img/cart.png" alt="cart">
+        </button>
+    </header>
+    <nav></nav>
+
+    <div class="cart-container">
+        <h1> Checkout </h1>
+        <div class="cart-header">
+            <h4>ITEM</h4>
+            <h4>PRICE</h4>
+            <h4>QUANTITY</h4>
+        </div>
+
+        <div class="cart-item">
+            <div class="item-info">
+                <img src="img/blueShirt.jpg" alt="shirt">
+                <h4>T-Shirt</h4>
+            </div>
+            <h4>$19.19</h4>
+            <div class="quantity">
+                <input type="number" value="3">
+                <button class="remove">REMOVE</button>
+            </div>
+        </div>
+
+        <div class="cart-total">
+            <h3>Total</h3>
+            <h4>$39.97</h4>
+        </div>
+
+        <button class="purchase">PURCHASE</button>
+
+    </div>
+        
 </body>
 </html>
