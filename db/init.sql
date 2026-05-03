@@ -32,6 +32,15 @@ CREATE TABLE ProductSizes (
     productStock INT CHECK (productStock >=0)
 );
 
+CREATE TABLE OrderItems (
+    orderItemsId SERIAL PRIMARY KEY,
+    orderId INT REFERENCES Orders(orderId),
+    productId INT REFERENCES Products(productId),
+    sizeId INT REFERENCES ProductSizes(sizeId),
+    quantity INT CHECK (quantity > 0),
+    price NUMERIC(10,2)
+);
+
 INSERT INTO Users (username, userFirst, userLast, userEmail, userAddress, userPhone, userPassword)
 VALUES ('chloecas', 'Chloe', 'Castrataro', 'ccas@gmail.com', '123 Vanier St', '514-555-8989', 'Vanier987'),
 ('neozid', 'Neo', 'Zidereck', 'neo@hotmail.com', '455 ave Decarie', '438-999-1234', 'CompSci123'),
