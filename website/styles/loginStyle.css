@@ -1,0 +1,37 @@
+#container {
+    display: flexbox;
+    width: 500px;
+    margin: 75px auto;
+}
+
+label {
+    display: inline-block;
+    width: 125px;
+}
+
+h1 {
+    text-align: center;
+}
+
+
+#btn-login {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
