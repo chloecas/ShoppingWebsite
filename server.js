@@ -1,11 +1,19 @@
 const express = require("express");
 const path = require("path");
 const client = require("./db");
+const session = require("express-session");
 const app = express();
 const redis = require("./redis");
 
 app.use(express.json());
 app.use(express.static("public"));
+
+app.use(session({
+    secret: "shopping-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }
+}));
 
 app.get("/", (req, res) => {
 	res.sendFile(path.join(__dirname, "views", "index.html"));
@@ -59,25 +67,40 @@ app.post("/api/users", async (req, res) => {
 
 
 app.post("/api/cart", async (req, res) => {
-    const userId = req.user.id; // or session id
-    const cart = req.body.cart;
+    try {
+        if (!req.session?.userId) {
+            return res.status(401).json({ error: "Please log in to use the cart" });
+        }
 
-    await redisClient.set(
-        `cart:${userId}`,
-        JSON.stringify(cart)
-    );
+        const userId = req.session.userId;
+        const cart = req.body.cart;
 
-    res.json({ success: true });
+        await redis.set(`cart:${userId}`, JSON.stringify(cart));
+        res.json({ success: true });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to save cart" });
+    }
 });
 
 app.get("/api/cart", async (req, res) => {
-    const userId = req.user.id;
+    try {
+        if (!req.session?.userId) {
+            return res.status(401).json({ error: "Please log in to use the cart" });
+        }
 
-    const cart = await redisClient.get(`cart:${userId}`);
+        const userId = req.session.userId;
+        const cart = await redis.get(`cart:${userId}`);
 
-    res.json({
-        cart: cart ? JSON.parse(cart) : []
-    });
+        res.json({
+            cart: cart ? JSON.parse(cart) : []
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to get cart" });
+    }
 });
 
 app.post("/api/checkout", async (req, res) => {
@@ -155,6 +178,28 @@ app.post("/api/checkout", async (req, res) => {
 			clientConn.release();
 		}
 	});
+
+
+app.post("/api/login", async (req, res) => {
+    try {
+        const { email, passwd } = req.body;
+        const result = await client.query(
+            `SELECT * FROM Users WHERE userEmail = $1 AND userPassword = $2`,
+            [email, passwd]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+
+        const user = result.rows[0];
+        res.json({ success: true, username: user.username });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Login failed" });
+    }
+});
 
 app.get("/account", (req, res) => {
 	res.sendFile(path.join(__dirname, "views", "account.html"));
