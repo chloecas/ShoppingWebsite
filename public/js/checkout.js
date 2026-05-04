@@ -1,5 +1,12 @@
 async function renderCart() {
     const res = await fetch('/api/cart');
+
+    if (res.status === 401) {
+        alert("Please log in to view your cart!");
+        window.location.href = "/account";
+        return;
+    }
+
     const data = await res.json();
 
     const cart = data.cart || [];
@@ -97,7 +104,9 @@ async function checkout() {
 
         if (!checkoutRes.ok) {
             const err = await checkoutRes.json();
-            throw new Error(err.error || "Checkout failed");
+            alert("Checkout Error: " + (err.error || "Something went wrong"));
+            return; 
+            
         }
 
         await checkoutRes.json();

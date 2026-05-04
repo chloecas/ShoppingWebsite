@@ -49,11 +49,12 @@ app.post("/api/users", async (req, res) => {
 	try {
 		const { user, fname, lname, email, address, phone, passwd } = req.body;
 
-		await client.query(
-			`INSERT INTO Users(username, userFirst, userLast, userEmail, userAddress, userPhone, userPassword)
-			VALUES($1, $2, $3, $4, $5, $6, $7)`,
-			[user, fname, lname, email, address, phone, passwd]
-		);
+		const result = await client.query(
+    		`INSERT INTO Users(username, userFirst, userLast, userEmail, userAddress, userPhone, userPassword)
+   			 VALUES($1, $2, $3, $4, $5, $6, $7)
+    		RETURNING *`,
+    		[user, fname, lname, email, address, phone, passwd]
+);
 
 		res.json({ 
 			success: true,
@@ -104,7 +105,8 @@ app.get("/api/cart", async (req, res) => {
 });
 
 app.post("/api/checkout", async (req, res) => {
-	const {cart, userId } = req.body;
+	const { cart } = req.body;
+	const userId = req.session?.userId || null; 
 
 	if(!cart || cart.length === 0) {
 		return res.status(400).json({error: "Cart is empty"});
@@ -130,7 +132,7 @@ app.post("/api/checkout", async (req, res) => {
 
 			const result = await clientConn.query(
 				`SELECT p.productprice, ps.productstock
-				FROM Product p
+				FROM Products p
 				JOIN ProductSizes ps ON p.productid = ps.productid
 				WHERE p.productid = $1 AND ps.sizeid = $2`,
 				[productId, sizeId]
@@ -193,11 +195,32 @@ app.post("/api/login", async (req, res) => {
         }
 
         const user = result.rows[0];
+		req.session.userId= user.userid;
+		req.session.username = user.username;
         res.json({ success: true, username: user.username });
 
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Login failed" });
+    }
+});
+
+app.get("/api/sizes", async (req, res) => {
+    try {
+        const { productId, size } = req.query;
+        const result = await client.query(
+            `SELECT sizeId FROM ProductSizes WHERE productId = $1 AND productSize = $2`,
+            [productId, size]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Size not found" });
+        }
+
+        res.json({ sizeId: result.rows[0].sizeid });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch size" });
     }
 });
 

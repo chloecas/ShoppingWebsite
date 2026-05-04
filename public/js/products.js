@@ -13,13 +13,13 @@ fetch("/api/products")
                 <div class="productPrice">$${product.productPrice}</div>
 
                 <div class="productSize">
-                    <input class="choice" type="radio" name="size-${product.productId}" value="small">
+                    <input class="choice" type="radio" name="size-${product.productId}" value="Small">
                     <label for="small-${product.productId}">Small</label>
 
-                    <input class="choice" type="radio" name="size-${product.productId}" value="medium">
+                    <input class="choice" type="radio" name="size-${product.productId}" value="Medium">
                     <label for="medium-${product.productId}">Medium</label>
                     
-                    <input class="choice" type="radio" name="size-${product.productId}" value="large">
+                    <input class="choice" type="radio" name="size-${product.productId}" value="Large">
                     <label for="large-${product.productId}">Large</label>
 
                     <br>

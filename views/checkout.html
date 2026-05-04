@@ -12,6 +12,9 @@
         <button type="button" id="login" onclick="goTo('account')">
             <img class="icon" src="/images/account.png" alt="account">
         </button>
+        <button type="button" id="home" onclick="goTo('')">
+            <img class="icon" src="/images/home.png" alt="home">
+        </button>
     </header>
     <nav></nav>
 
@@ -27,7 +30,12 @@
 
     </div>
      <script src="/js/checkout.js"></script> 
-     <script src="/js/login.js"></script> 
      <script src="/js/main.js"></script> 
+
+     <script>
+        function goTo(page) {
+            window.location.href=`/${page}`;
+        }   
+     </script>
 </body>
 </html>

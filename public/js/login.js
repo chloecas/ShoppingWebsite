@@ -29,6 +29,13 @@ document.getElementById("signUpForm").addEventListener("submit", async (e) => {
 
     const data = await res.json();
     console.log(data);
+
+    if (res.ok) {
+        alert('Registration successful! Welcome to Shirtify!');
+        form.reset();
+    } else {
+        alert("Error: " + (data.error || "Registration failed"));
+    }
 });
 
 // -- Login
@@ -45,7 +52,7 @@ document.querySelector(".existingCustomer form").addEventListener("submit", asyn
 
     const res = await fetch ("/api/login" , {
         method: "POST",
-        headers: { "Content-Type ":"application/json"},
+        headers: { "Content-Type": "application/json"},
         body: JSON.stringify(formData),
     });
 
@@ -53,7 +60,7 @@ document.querySelector(".existingCustomer form").addEventListener("submit", asyn
     console.log(data);
 
     if (res.ok) {
-        alert('Welcome back');
+        alert(`Login successful! Welcome to Shirtify!`);
         goTo("");
     } else {
         alert(data.error || "Login Failed");

@@ -9,7 +9,10 @@
 <body>
    <header>
         <button type="button">
-                <img class="icon" src="/images/cart.png" alt="cart" onclick="goCheckout()">
+                <img class="icon" src="/images/cart.png" alt="cart" onclick="goTo('checkout')">
+        </button>
+        <button type="button" id="home" onclick="goTo('')">
+            <img class="icon" src="/images/home.png" alt="home">
         </button>
     </header>
     
@@ -82,6 +85,10 @@
 
 <script src="/js/login.js"></script>
 <script src="/js/main.js"></script>
-<script src ="/js/checkout.js"></script>
+<script>
+   function goTo(page) {
+            window.location.href=`/${page}`;
+        } 
+</script>
 </body>
 </html>
