@@ -4,12 +4,14 @@ const pool = require("./db");
 const session = require("express-session");
 const app = express();
 const redis = require("./redis");
+const bcrypt = require("bcrypt");
+
 
 app.use(express.json());
 app.use(express.static("public"));
 
 app.use(session({
-    secret: "shopping-secret-key",
+    secret: process.env.SESSION_SECRET || "shopping-secret-key",
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false }
@@ -49,11 +51,13 @@ app.post("/api/users", async (req, res) => {
 	try {
 		const { user, fname, lname, email, address, phone, passwd } = req.body;
 
+		const hashedPassword = await bcrypt.hash(passwd, 10);
+
 		const result = await pool.query(
     		`INSERT INTO Users(username, userFirst, userLast, userEmail, userAddress, userPhone, userPassword)
    			 VALUES($1, $2, $3, $4, $5, $6, $7)
     		RETURNING *`,
-    		[user, fname, lname, email, address, phone, passwd]
+    		[user, fname, lname, email, address, phone, hashedPassword]
 );
 
 		res.json({ 
@@ -186,8 +190,8 @@ app.post("/api/login", async (req, res) => {
     try {
         const { email, passwd } = req.body;
         const result = await pool.query(
-            `SELECT * FROM Users WHERE userEmail = $1 AND userPassword = $2`,
-            [email, passwd]
+            `SELECT * FROM Users WHERE userEmail = $1`,
+            [email]
         );
 
         if (result.rows.length === 0) {
@@ -195,6 +199,13 @@ app.post("/api/login", async (req, res) => {
         }
 
         const user = result.rows[0];
+
+		const match = await bcrypt.compare(passwd, user.userpassword);
+
+		if (!match) {
+			return res.status(401).json({ error: "Invalid email or password" });
+		}
+
 		req.session.userId= user.userid;
 		req.session.username = user.username;
         res.json({ success: true, username: user.username });
