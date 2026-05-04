@@ -25,7 +25,7 @@ fetch("/api/products")
                     <br>
                     <br><br>
 
-                    <button type ="button">Add To Cart</button>
+                    <button type ="button" onclick="addToCart(this)">Add To Cart</button>
                 </div>
                 </div>
                 `).join("");     
