@@ -67,3 +67,34 @@ document.querySelector(".existingCustomer form").addEventListener("submit", asyn
     }
 
 })
+
+// Past orders
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const ordersList = document.getElementById("order-list");
+
+    try {
+        const res = await fetch("/api/orders");
+        const orders = await res.json();
+
+        if (!res.ok) throw new Error(orders.error);
+
+        if (orders.length === 0) {
+            ordersList.innerHTML = "<tr><td colspan='3'>No orders found.</td></tr>";
+            return;
+        }
+
+        // Loop through orders and create rows
+        ordersList.innerHTML = orders.map(order => `
+            <tr>
+                <td>#${order.orderid}</td>
+                <td>${new Date(order.orderdate).toLocaleDateString()}</td>
+                <td>$${order.ordertotal}</td>
+            </tr>
+        `).join("");
+
+    } catch (err) {
+        console.error(err);
+        ordersList.innerHTML = `<tr><td colspan='3'>Error: ${err.message}</td></tr>`;
+    }
+});

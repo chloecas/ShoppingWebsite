@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const client = require("./db");
+const pool = require("./db");
 const session = require("express-session");
 const app = express();
 const redis = require("./redis");
@@ -27,7 +27,7 @@ app.get("/api/products", async (req,res) => {
 			return res.json(JSON.parse(cached));
 		}
 	
-	const result = await client.query("SELECT * FROM Products");
+	const result = await pool.query("SELECT * FROM Products");
 
 	const formatted = result.rows.map(p => ({
 		productId: p.productid,
@@ -49,7 +49,7 @@ app.post("/api/users", async (req, res) => {
 	try {
 		const { user, fname, lname, email, address, phone, passwd } = req.body;
 
-		const result = await client.query(
+		const result = await pool.query(
     		`INSERT INTO Users(username, userFirst, userLast, userEmail, userAddress, userPhone, userPassword)
    			 VALUES($1, $2, $3, $4, $5, $6, $7)
     		RETURNING *`,
@@ -112,7 +112,7 @@ app.post("/api/checkout", async (req, res) => {
 		return res.status(400).json({error: "Cart is empty"});
 	}
 
-	const clientConn = await client.connect();
+	const clientConn = await pool.connect();
 
 	try {
 		await clientConn.query("BEGIN");
@@ -185,7 +185,7 @@ app.post("/api/checkout", async (req, res) => {
 app.post("/api/login", async (req, res) => {
     try {
         const { email, passwd } = req.body;
-        const result = await client.query(
+        const result = await pool.query(
             `SELECT * FROM Users WHERE userEmail = $1 AND userPassword = $2`,
             [email, passwd]
         );
@@ -205,10 +205,34 @@ app.post("/api/login", async (req, res) => {
     }
 });
 
+
+app.get("/api/orders", async (req, res) => {
+    const userId = req.session?.userId;
+
+    if (!userId) {
+        return res.status(401).json({ error: "Please log in to view orders" });
+    }
+
+    try {
+        const result = await pool.query(
+            `SELECT orderId, orderTotal, orderDate 
+             FROM Orders 
+             WHERE userId = $1 
+             ORDER BY orderDate DESC`, 
+            [userId]
+        );
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch orders" });
+    }
+});
+
 app.get("/api/sizes", async (req, res) => {
     try {
         const { productId, size } = req.query;
-        const result = await client.query(
+        const result = await pool.query(
             `SELECT sizeId FROM ProductSizes WHERE productId = $1 AND productSize = $2`,
             [productId, size]
         );
